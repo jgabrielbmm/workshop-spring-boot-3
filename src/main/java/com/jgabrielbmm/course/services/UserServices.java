@@ -23,7 +23,6 @@ public class UserServices {
 
     public User findById(Long id){
         Optional<User> user = userRepository.findById(id);
-        System.out.println(user);
         return user.get();
     }
 
