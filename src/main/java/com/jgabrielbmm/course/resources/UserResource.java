@@ -35,7 +35,7 @@ public class UserResource {
     public ResponseEntity<User> insert(@RequestBody User obj){
         User user = userServices.insert(obj);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-        return ResponseEntity.created(uri).body(obj);
+        return ResponseEntity.created(uri).body(user);
     }
 
     @DeleteMapping(value = "/{id}")

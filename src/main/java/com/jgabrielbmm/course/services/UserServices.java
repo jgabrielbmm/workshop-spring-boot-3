@@ -2,6 +2,11 @@ package com.jgabrielbmm.course.services;
 
 import com.jgabrielbmm.course.entities.User;
 import com.jgabrielbmm.course.repositories.UserRepository;
+import com.jgabrielbmm.course.services.exceptions.DatabaseException;
+import com.jgabrielbmm.course.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +27,7 @@ public class UserServices {
 
     public User findById(Long id){
         Optional<User> user = userRepository.findById(id);
-        return user.get();
+        return user.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public User insert(User obj){
@@ -30,13 +35,25 @@ public class UserServices {
     }
 
     public void delete(Long id){
-        userRepository.deleteById(id);
+        findById(id);
+        try {
+            userRepository.deleteById(id);
+        }
+        catch (DataIntegrityViolationException e){
+            throw new DatabaseException(e.getMessage());
+        }
+
     }
 
     public User update(Long id, User obj){
+        try{
         User entity = userRepository.getReferenceById(id);
         updateData(entity, obj);
         return userRepository.save(entity);
+        }
+        catch (EntityNotFoundException e){
+            throw new ResourceNotFoundException(id);
+        }
     }
 
     public void updateData(User entity, User obj){
