@@ -2,7 +2,6 @@ package com.jgabrielbmm.course.services;
 
 import com.jgabrielbmm.course.entities.User;
 import com.jgabrielbmm.course.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +23,26 @@ public class UserServices {
     public User findById(Long id){
         Optional<User> user = userRepository.findById(id);
         return user.get();
+    }
+
+    public User insert(User obj){
+        return userRepository.save(obj);
+    }
+
+    public void delete(Long id){
+        userRepository.deleteById(id);
+    }
+
+    public User update(Long id, User obj){
+        User entity = userRepository.getReferenceById(id);
+        updateData(entity, obj);
+        return userRepository.save(entity);
+    }
+
+    public void updateData(User entity, User obj){
+        entity.setName(obj.getName());
+        entity.setEmail(obj.getEmail());
+        entity.setPhone(obj.getPhone());
     }
 
 
